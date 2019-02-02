@@ -1,5 +1,9 @@
 # tymly-model-playpen
 
+## Demo
+
+* Online demo [available here](https://wmfs.github.io/tymly-model-playpen/).
+
 ## Installation
 
 ``` bash
