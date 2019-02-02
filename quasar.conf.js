@@ -17,6 +17,8 @@ module.exports = function (ctx) {
     ],
     supportIE: true,
     build: {
+      publicPath: 'tymly-model-playpen',
+      distDir: 'docs',
       scopeHoisting: true,
       // vueRouterMode: 'history',
       // vueCompiler: true,
