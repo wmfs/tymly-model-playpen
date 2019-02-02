@@ -13,7 +13,7 @@
               <draggable v-model="paletteItems" :options="paletteOptions"
                          @end="setPropertiesFromDragEvent" :clone="clone">
                 <div class="palette-item" v-for="(item, index) in paletteItems" :key="item.typeHint">
-                  <img class="paletteIcon" :src="'assets/'+item.image">
+                  <img class="paletteIcon" :src="'statics/'+item.image">
                 </div>
               </draggable>
             </q-page-sticky>
