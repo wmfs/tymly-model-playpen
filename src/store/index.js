@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import example from './module-example'
-
 Vue.use(Vuex)
 
 /*
@@ -11,11 +9,20 @@ Vue.use(Vuex)
  */
 
 export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    modules: {
-      example
+  return new Vuex.Store({
+    state: {
+      paletteDrawerOpen: true //        leftDrawerOpen: true, // this.$q.platform.is.desktop,
+    },
+    getters: {
+      paletteDrawerOpen: state => {
+        return state.paletteDrawerOpen
+      }
+    },
+    mutations: {
+      paletteDrawerOpen (state, paletteDrawerOpen) {
+        state.paletteDrawerOpen = paletteDrawerOpen
+      }
     }
   })
 
-  return Store
 }

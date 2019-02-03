@@ -4,15 +4,15 @@
       <q-toolbar
         color="primary"
       >
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-        >
-          <q-icon name="menu"/>
-        </q-btn>
+        <!--<q-btn-->
+        <!--flat-->
+        <!--dense-->
+        <!--round-->
+        <!--@click="leftDrawerOpen = !leftDrawerOpen"-->
+        <!--aria-label="Menu"-->
+        <!--&gt;-->
+        <!--<q-icon name="menu"/>-->
+        <!--</q-btn>-->
 
         <q-toolbar-title>
           Tymly Model Editor
@@ -22,7 +22,8 @@
       </q-toolbar>
     </q-layout-header>
 
-    <q-layout-drawer v-model="leftDrawerOpen" :width="60" :behavior="'desktop'" :mini="true" :content-class="'palette-drawer-extras'">
+    <q-layout-drawer v-model="paletteDrawerOpen" :width="60" :behavior="'desktop'" :mini="true"
+                     :content-class="'palette-drawer-extras'">
       <!--@end="setPropertiesFromDragEvent"-->
       <draggable v-model="paletteItems" :options="paletteOptions" :clone="clone">
         <div class="palette-item" v-for="(item, index) in paletteItems" :key="item.typeHint">
@@ -40,9 +41,16 @@
 </template>
 
 <script>
+  // this.$store.commit('launch/launchExecution', res)
   import draggable from 'vuedraggable'
+
   export default {
     name: 'MyLayout',
+    computed: {
+      paletteDrawerOpen: function () {
+        return this.$store.state.paletteDrawerOpen
+      }
+    },
     components: {
       draggable
     },
@@ -63,7 +71,6 @@
     },
     data () {
       const d = {
-        leftDrawerOpen: this.$q.platform.is.desktop,
         paletteOptions: {
           sort: false,
           ghostClass: 'ghost',
@@ -121,7 +128,7 @@
 <style>
 
   .palette-drawer-extras {
-    overflow-x:hidden;
+    overflow-x: hidden;
   }
 
   .paletteIcon {

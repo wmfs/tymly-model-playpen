@@ -10,7 +10,7 @@
 
           <div class="col-8 q-pa-sm workspace">
             <h4>Model</h4>
-
+            {{paletteDrawerOpen}}
             <div>
               <draggable v-model="modelItems" class="dragArea" :options="modelOptions"
                          @choose="setPropertiesFromDragEvent">
@@ -165,6 +165,11 @@
       draggable,
       Brace
     },
+    computed: {
+      paletteDrawerOpen: function () {
+        return this.$store.state.paletteDrawerOpen
+      }
+    },
     mounted () {
       // this.editor = brace.edit('vue-bulma-editor')
       // this.editor.session.setValue('Hello! :-)')
@@ -176,6 +181,7 @@
           () => {
             console.log('>>>>>', tabName)
             if (tabName === 'json') {
+              this.$store.commit('paletteDrawerOpen', false)
               _this.editor = brace.edit('vue-bulma-editor')
               _this.editor.session.setValue(
                 JSON.stringify(jsonSchemaBuilder(
@@ -184,6 +190,8 @@
                   }
                 ), null, 2)
               )
+            } else {
+              this.$store.commit('paletteDrawerOpen', true)
             }
           }
         )
