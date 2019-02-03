@@ -15,12 +15,14 @@ export default function (/* { ssrContext } */) {
     },
     getters: {
       paletteDrawerOpen: state => {
+        console.log('RETURNING', state.paletteDrawerOpen)
         return state.paletteDrawerOpen
       }
     },
     mutations: {
-      paletteDrawerOpen (state, paletteDrawerOpen) {
-        state.paletteDrawerOpen = paletteDrawerOpen
+      paletteDrawerOpen (state, value) {
+        console.log('SETTING', state.paletteDrawerOpen)
+        state.paletteDrawerOpen = value
       }
     }
   })

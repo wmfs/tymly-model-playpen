@@ -171,6 +171,11 @@
       }
     },
     mounted () {
+      this.$nextTick(
+        function () {
+          this.$store.commit('paletteDrawerOpen', true)
+        }
+      )
       // this.editor = brace.edit('vue-bulma-editor')
       // this.editor.session.setValue('Hello! :-)')
     },
@@ -179,7 +184,6 @@
         const _this = this
         this.$nextTick(
           () => {
-            console.log('>>>>>', tabName)
             if (tabName === 'json') {
               this.$store.commit('paletteDrawerOpen', false)
               _this.editor = brace.edit('vue-bulma-editor')

@@ -47,8 +47,13 @@
   export default {
     name: 'MyLayout',
     computed: {
-      paletteDrawerOpen: function () {
-        return this.$store.state.paletteDrawerOpen
+      paletteDrawerOpen: {
+        get: function () {
+          return this.$store.state.paletteDrawerOpen
+        },
+        set: function (value) {
+          this.$store.commit('paletteDrawerOpen', value)
+        }
       }
     },
     components: {
