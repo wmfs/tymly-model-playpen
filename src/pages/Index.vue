@@ -8,18 +8,7 @@
       <q-tab-pane name="editor">
         <div class="row">
 
-          <div class="col-1 q-pa-sm">
-            <q-page-sticky position="top-left" :offset="[0, 70]">
-              <draggable v-model="paletteItems" :options="paletteOptions"
-                         @end="setPropertiesFromDragEvent" :clone="clone">
-                <div class="palette-item" v-for="(item, index) in paletteItems" :key="item.typeHint">
-                  <img class="paletteIcon" :src="'statics/'+item.image">
-                </div>
-              </draggable>
-            </q-page-sticky>
-          </div>
-
-          <div class="col-7 q-pa-sm workspace">
+          <div class="col-8 q-pa-sm workspace">
             <h4>Model</h4>
 
             <div>
@@ -102,24 +91,6 @@
     border: 5px solid #027BE3;
     margin-bottom: 2px;
     margin-top: 2px;
-    cursor: default;
-    user-select: none;  }
-
-  .paletteIcon {
-    width: 50px;
-    height: 50px;
-    margin: 10px;
-  }
-
-  .palette-item {
-    height: 70px;
-    text-align: center;
-    width: 100%;
-    display: block;
-    background-color: #fff;
-    outline: 0;
-    border: 1px solid rgba(0, 0, 0, .125);
-    margin: 5px;
     cursor: default;
     user-select: none;
   }
@@ -223,36 +194,14 @@
       setPropertiesFromDragEvent (event) {
         const idx = event.newIndex || event.oldIndex
         this.currentProperty = this.modelItems[idx]
-      },
-      clone: function (original) {
-        this.counts[original.typeHint]++
-        const key = `${original.typeHint}${this.counts[original.typeHint]}`
-        return {
-          typeHint: original.typeHint,
-          title: '',
-          required: false,
-          multiple: false,
-          example: '',
-          image: original.image,
-          key: key
-        }
       }
     },
     data: function () {
-      const d = {
+      return {
         currentProperty: {
           hide: true
         },
         selectedTab: 'editor',
-        paletteOptions: {
-          sort: false,
-          ghostClass: 'ghost',
-          group: {
-            name: 'palette',
-            pull: 'clone',
-            put: false
-          }
-        },
         modelOptions: {
           sort: true,
           animation: 150,
@@ -260,47 +209,8 @@
           group: 'palette'
         },
         modelItems: [],
-        paletteItems: [
-          {
-            typeHint: 'string',
-            image: 'icons8-typography-filled-50.png'
-          },
-          {
-            typeHint: 'integer',
-            title: '123',
-            image: 'icons8-number-1-filled-50.png'
-          },
-          {
-            typeHint: 'boolean',
-            image: 'icons8-toggle-on-filled-50.png'
-          },
-          {
-            typeHint: 'date',
-            image: 'icons8-event-50.png'
-          },
-          {
-            typeHint: 'dateTime',
-            image: 'icons8-watch-50.png'
-          },
-          {
-            typeHint: 'email',
-            image: 'icons8-email-filled-50.png'
-          },
-          {
-            typeHint: 'object',
-            image: 'icons8-registry-editor-50.png'
-          }
-        ],
         counts: {}
       }
-
-      d.paletteItems.forEach(
-        paletteItem => {
-          d.counts[paletteItem.typeHint] = 0
-        }
-      )
-
-      return d
     }
   }
 </script>
