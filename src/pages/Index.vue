@@ -13,8 +13,8 @@
             {{paletteDrawerOpen}}
             <div>
               <draggable v-model="modelItems" class="dragArea" :options="modelOptions"
-                         @choose="setPropertiesFromDragEvent">
-                <div :class="item.key === currentProperty.key ? 'selectedModelItem' : 'model-item'" v-for="(item, index) in modelItems" :key="index">
+                         @choose="choose">
+                <div :class="item.key === currentItem.key ? 'selectedModelItem' : 'model-item'" v-for="(item, index) in modelItems" :key="index">
                   <pre>{{item.key}}</pre>
                   <p>{{item.title}}</p>
                 </div>
@@ -27,28 +27,29 @@
 
             <!--<q-page-sticky position="top-right" :offset="[0, 70]">-->
             <div>
-              <div v-if="!currentProperty.hide">
+              <div>
 
                 <h6>Property</h6>
-                <q-field>
-                  <q-input stack-label="Key" v-model="currentProperty.key"/>
-                </q-field>
 
-                <q-field>
-                  <q-input stack-label="Title" v-model="currentProperty.title"/>
-                </q-field>
+                <!--<q-field>-->
+                  <!--<q-input stack-label="Key" v-model="currentProperty.key"/>-->
+                <!--</q-field>-->
 
-                <q-field>
-                  <q-input stack-label="Example" v-model="currentProperty.example"/>
-                </q-field>
+                <!--<q-field>-->
+                  <!--<q-input stack-label="Title" v-model="currentProperty.title"/>-->
+                <!--</q-field>-->
 
-                <q-field>
-                  <q-checkbox v-model="currentProperty.required" label="Required?"/>
-                </q-field>
+                <!--<q-field>-->
+                  <!--<q-input stack-label="Example" v-model="currentProperty.example"/>-->
+                <!--</q-field>-->
 
-                <q-field>
-                  <q-checkbox v-model="currentProperty.multiple" label="Multiple?"/>
-                </q-field>
+                <!--<q-field>-->
+                  <!--<q-checkbox v-model="currentProperty.required" label="Required?"/>-->
+                <!--</q-field>-->
+
+                <!--<q-field>-->
+                  <!--<q-checkbox v-model="currentProperty.multiple" label="Multiple?"/>-->
+                <!--</q-field>-->
               </div>
             </div>
             <!--</q-page-sticky>-->
@@ -168,6 +169,17 @@
     computed: {
       paletteDrawerOpen: function () {
         return this.$store.state.paletteDrawerOpen
+      },
+      currentItem: function () {
+        return this.$store.state.currentItem
+      },
+      modelItems: {
+        get: function () {
+          return this.$store.state.currentItems
+        },
+        set: function(v) {
+          this.$store.commit('currentItems', v)
+        }
       }
     },
     mounted () {
@@ -203,16 +215,13 @@
       codeChange (e) {
         // this.cardscript = e
       },
-      setPropertiesFromDragEvent (event) {
+      choose (event) {
         const idx = event.newIndex || event.oldIndex
-        this.currentProperty = this.modelItems[idx]
+        this.$store.commit('setCurrentItem', idx)
       }
     },
     data: function () {
       return {
-        currentProperty: {
-          hide: true
-        },
         selectedTab: 'editor',
         modelOptions: {
           sort: true,
@@ -220,7 +229,6 @@
           ghostClass: 'ghost',
           group: 'palette'
         },
-        modelItems: [],
         counts: {}
       }
     }

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+const dottie = require('dottie')
 
 Vue.use(Vuex)
 
@@ -9,22 +10,45 @@ Vue.use(Vuex)
  */
 
 export default function (/* { ssrContext } */) {
-  return new Vuex.Store({
-    state: {
-      paletteDrawerOpen: true //        leftDrawerOpen: true, // this.$q.platform.is.desktop,
-    },
-    getters: {
-      paletteDrawerOpen: state => {
-        console.log('RETURNING', state.paletteDrawerOpen)
-        return state.paletteDrawerOpen
-      }
-    },
-    mutations: {
-      paletteDrawerOpen (state, value) {
-        console.log('SETTING', state.paletteDrawerOpen)
-        state.paletteDrawerOpen = value
+  const state = {
+    paletteDrawerOpen: true,
+    currentModelPath: '$ROOT',
+    models: {
+      '$ROOT': {
+        title: '',
+        items: [],
+        models: {}
       }
     }
-  })
+  }
+  state.currentModel = dottie.get(state.models, state.currentModelPath)
+  state.currentItems = state.currentModel.items
+  state.currentItemIdx = null
+  state.currentItem = {}
+  return new Vuex.Store(
+    {
+      state: state,
+      getters: {
+        paletteDrawerOpen: state => {
+          return state.paletteDrawerOpen
+        },
+        currentItems: state => {
+          return state.currentItems
+        }
+      },
+      mutations: {
+        paletteDrawerOpen (state, value) {
+          state.paletteDrawerOpen = value
+        },
+        currentItems (state, value) {
+          dottie.set(state.models, state.currentModelPath + '.items', value)
+          state.currentItems = dottie.get(state.models, state.currentModelPath + '.items')
+        },
+        setCurrentItem (state, idx) {
+          state.currentItemIdx = idx
+          state.currentItem = state.currentItems[idx]
+        }
+      }
+    })
 
 }

@@ -25,7 +25,7 @@
     <q-layout-drawer v-model="paletteDrawerOpen" :width="60" :behavior="'desktop'" :mini="true"
                      :content-class="'palette-drawer-extras'">
       <!--@end="setPropertiesFromDragEvent"-->
-      <draggable v-model="paletteItems" :options="paletteOptions" :clone="clone">
+      <draggable v-model="paletteItems" :options="paletteOptions" :clone="clone" @end="drop">
         <div class="palette-item" v-for="(item, index) in paletteItems" :key="item.typeHint">
           <img class="paletteIcon" :src="'statics/'+item.image">
         </div>
@@ -60,6 +60,10 @@
       draggable
     },
     methods: {
+      drop: function (event) {
+        this.$store.commit('setCurrentItem', event.newIndex)
+
+      },
       clone: function (original) {
         this.counts[original.typeHint]++
         const key = `${original.typeHint}${this.counts[original.typeHint]}`
@@ -92,7 +96,6 @@
           },
           {
             typeHint: 'integer',
-            title: '123',
             image: 'icons8-number-1-filled-50.png'
           },
           {
