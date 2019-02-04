@@ -12,6 +12,7 @@ Vue.use(Vuex)
 export default function (/* { ssrContext } */) {
   const state = {
     paletteDrawerOpen: true,
+    propertyModalShowing: false,
     currentModelPath: '$ROOT',
     models: {
       '$ROOT': {
@@ -34,9 +35,15 @@ export default function (/* { ssrContext } */) {
         },
         currentItems: state => {
           return state.currentItems
+        },
+        propertyModalShowing: state => {
+          return state.propertyModalShowing
         }
       },
       mutations: {
+        propertyModalShowing (state, value) {
+          state.propertyModalShowing = value
+        },
         paletteDrawerOpen (state, value) {
           state.paletteDrawerOpen = value
         },

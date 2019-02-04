@@ -62,7 +62,11 @@
     methods: {
       drop: function (event) {
         this.$store.commit('setCurrentItem', event.newIndex)
-
+        this.$nextTick(
+          () => {
+            this.$store.commit('propertyModalShowing', true)
+          }
+        )
       },
       clone: function (original) {
         this.counts[original.typeHint]++

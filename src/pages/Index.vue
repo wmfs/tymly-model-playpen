@@ -1,60 +1,47 @@
 <template>
   <q-page>
+
+    <q-modal v-model="propertyModalShowing">
+      <div class="q-ma-md">
+        <h5>Properties</h5>
+        <q-field>
+          <q-input v-model="currentItem.key" stack-label="Key" />
+        </q-field>
+
+        <q-field>
+          <q-input v-model="currentItem.title" stack-label="Title" />
+        </q-field>
+
+        <q-field>
+          <q-checkbox v-model="currentItem.required" label="Required?" />
+        </q-field>
+        <q-field>
+          <q-checkbox v-model="currentItem.multiple" label="Multiple?" />
+        </q-field>
+
+        <hr>
+
+        <q-btn color="primary"
+          @click="propertyModalShowing = false"
+          label="Close"/>
+      </div>
+    </q-modal>
+
+
     <q-tabs inverted v-model="selectedTab" @select="tabChange">
       <!-- Tabs - notice slot="title" -->
       <q-tab slot="title" name="editor" icon="edit"/>
       <q-tab slot="title" name="json" icon="code"/>
 
       <q-tab-pane name="editor">
-        <div class="row">
-
-          <div class="col-8 q-pa-sm workspace">
-            <h4>Model</h4>
-            {{paletteDrawerOpen}}
-            <div>
-              <draggable v-model="modelItems" class="dragArea" :options="modelOptions"
-                         @choose="choose">
-                <div :class="item.key === currentItem.key ? 'selectedModelItem' : 'model-item'" v-for="(item, index) in modelItems" :key="index">
-                  <pre>{{item.key}}</pre>
-                  <p>{{item.title}}</p>
-                </div>
-              </draggable>
+        <div class="q-pa-md">
+          <draggable v-model="modelItems" class="dragArea" :options="modelOptions" @choose="choose">
+            <div :class="item.key === currentItem.key ? 'selectedModelItem' : 'model-item'" v-for="(item, index) in modelItems" :key="index">
+              <q-icon class="q-mx-sm grab" name="drag_handle" size="2rem"/>
+              <span>{{item.key}}</span>
+              <q-btn class="float-right q-ma-sm" icon="edit" @click.native="edit(index)"></q-btn>
             </div>
-
-          </div>
-
-          <div class="col-4 q-pa-sm">
-
-            <!--<q-page-sticky position="top-right" :offset="[0, 70]">-->
-            <div>
-              <div>
-
-                <h6>Property</h6>
-
-                <!--<q-field>-->
-                  <!--<q-input stack-label="Key" v-model="currentProperty.key"/>-->
-                <!--</q-field>-->
-
-                <!--<q-field>-->
-                  <!--<q-input stack-label="Title" v-model="currentProperty.title"/>-->
-                <!--</q-field>-->
-
-                <!--<q-field>-->
-                  <!--<q-input stack-label="Example" v-model="currentProperty.example"/>-->
-                <!--</q-field>-->
-
-                <!--<q-field>-->
-                  <!--<q-checkbox v-model="currentProperty.required" label="Required?"/>-->
-                <!--</q-field>-->
-
-                <!--<q-field>-->
-                  <!--<q-checkbox v-model="currentProperty.multiple" label="Multiple?"/>-->
-                <!--</q-field>-->
-              </div>
-            </div>
-            <!--</q-page-sticky>-->
-
-          </div>
+          </draggable>
         </div>
 
       </q-tab-pane>
@@ -83,13 +70,17 @@
 
 <style>
 
+  .grab {
+    height: 100%;
+  }
+
   .selectedModelItem {
     height: 70px;
     width: 100%;
     display: block;
     background-color: #fff;
     outline: 0;
-    border: 5px solid #027BE3;
+    border: 2px solid #027BE3;
     margin-bottom: 2px;
     margin-top: 2px;
     cursor: default;
@@ -177,8 +168,16 @@
         get: function () {
           return this.$store.state.currentItems
         },
-        set: function(v) {
+        set: function (v) {
           this.$store.commit('currentItems', v)
+        }
+      },
+      propertyModalShowing: {
+        get: function () {
+          return this.$store.state.propertyModalShowing
+        },
+        set: function (v) {
+          this.$store.commit('propertyModalShowing', v)
         }
       }
     },
@@ -192,6 +191,10 @@
       // this.editor.session.setValue('Hello! :-)')
     },
     methods: {
+      edit: function (idx) {
+        this.$store.commit('setCurrentItem', idx)
+        this.$store.commit('propertyModalShowing', true)
+      },
       tabChange (tabName) {
         const _this = this
         this.$nextTick(
@@ -225,6 +228,7 @@
         selectedTab: 'editor',
         modelOptions: {
           sort: true,
+          handle: '.grab',
           animation: 150,
           ghostClass: 'ghost',
           group: 'palette'
