@@ -23,9 +23,23 @@
         </q-field>
         <hr>
 
-        <q-btn color="primary"
-               @click="propertyModalShowing = false"
-               label="Close"/>
+        <div>
+
+          <q-btn class="q-ma-sm" icon="delete" color="red"
+                 @click="propertyModalShowing = false"/>
+
+          <q-btn class="q-ma-sm float-right" color="primary"
+                 @click="propertyModalShowing = false"
+                 label="OK"/>
+
+          <q-btn class="q-ma-sm float-right" color="primary"
+                 outline
+                 @click="propertyModalShowing = false"
+                 label="Cancel"/>
+
+
+        </div>
+
       </div>
     </q-modal>
 
