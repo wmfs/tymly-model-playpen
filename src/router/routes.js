@@ -2,9 +2,11 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MyLayout.vue'),
+    component: () => import('layouts/Layout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      {path: '', redirect: {name: 'drag-and-drop'}},
+      { name: 'drag-and-drop', path: 'drag-and-drop', component: () => import('pages/Drag-and-drop.vue') },
+      { name: 'text-editor', path: 'text-editor', component: () => import('pages/Text-editor.vue') }
     ]
   }
 ]
