@@ -3,7 +3,10 @@
 
     <q-modal v-model="propertyModalShowing">
       <div class="q-ma-md">
-        <h5>Properties</h5>
+        <div >
+          <img class="headerIcon" :src="'statics/'+currentItem.image">
+        </div>
+
         <q-field>
           <q-input v-model="currentItem.key" stack-label="Key" />
         </q-field>
@@ -30,13 +33,20 @@
       <div :class="item.key === currentItem.key ? 'selectedModelItem' : 'model-item'" v-for="(item, index) in modelItems" :key="index">
         <q-icon class="q-mx-sm grab" name="drag_handle" size="2rem"/>
         <span>{{item.key}}</span>
-        <q-btn class="float-right q-ma-sm" icon="edit" @click.native="edit(index)"></q-btn>
+        <q-btn class="float-right q-ma-sm" color="grey" size="large" icon="settings" flat @click.native="edit(index)"></q-btn>
       </div>
     </draggable>
   </q-page>
 </template>
 
 <style>
+
+  .headerIcon {
+    width: 40px;
+    height: 40px;
+    display: block;
+    margin: auto;
+  }
 
   .grab {
     height: 100%;

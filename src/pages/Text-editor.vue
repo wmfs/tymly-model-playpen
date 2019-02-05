@@ -39,7 +39,7 @@
       this.editor.session.setValue(
         JSON.stringify(jsonSchemaBuilder(
           {
-            propertyHints: this.modelItems
+            propertyHints: this.$store.state.currentItems
           }
         ), null, 2)
       )
