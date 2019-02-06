@@ -65,9 +65,12 @@
       changeNavDrawer () {
         this.navDrawerOpen = !this.navDrawerOpen
       },
+
       drop: function (event) {
         if (event.to.className === 'dragArea') {
+          // Dragged into the main model area
           this.$store.commit('setCurrentItem', event.newIndex)
+          this.$store.commit('editableProperty', JSON.parse(JSON.stringify(this.$store.state.currentItem)))
           this.$nextTick(
             () => {
               this.$store.commit('propertyModalShowing', true)

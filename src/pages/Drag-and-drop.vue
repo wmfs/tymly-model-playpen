@@ -3,23 +3,23 @@
 
     <q-modal v-model="propertyModalShowing">
       <div class="q-ma-md">
-        <div >
-          <img class="headerIcon" :src="'statics/'+currentItem.image">
+        <div>
+          <img class="headerIcon" :src="'statics/'+editableProperty.image">
         </div>
 
         <q-field>
-          <q-input v-model="currentItem.key" stack-label="Key" />
+          <q-input v-model="editableProperty.key" stack-label="Key"/>
         </q-field>
 
         <q-field>
-          <q-input v-model="currentItem.title" stack-label="Title" />
+          <q-input v-model="editableProperty.title" stack-label="Title"/>
         </q-field>
 
         <q-field>
-          <q-checkbox v-model="currentItem.required" label="Required?" />
+          <q-checkbox v-model="editableProperty.required" label="Required?"/>
         </q-field>
         <q-field>
-          <q-checkbox v-model="currentItem.multiple" label="Multiple?" />
+          <q-checkbox v-model="editableProperty.multiple" label="Multiple?"/>
         </q-field>
         <hr>
 
@@ -29,12 +29,12 @@
                  @click="propertyModalShowing = false"/>
 
           <q-btn class="q-ma-sm float-right" color="primary"
-                 @click="propertyModalShowing = false"
+                 @click="saveEdit"
                  label="OK"/>
 
           <q-btn class="q-ma-sm float-right" color="primary"
                  outline
-                 @click="propertyModalShowing = false"
+                 @click="cancelEdit"
                  label="Cancel"/>
 
 
@@ -44,10 +44,12 @@
     </q-modal>
 
     <draggable v-model="modelItems" class="dragArea" :options="modelOptions" @choose="choose">
-      <div :class="item.key === currentItem.key ? 'selectedModelItem' : 'model-item'" v-for="(item, index) in modelItems" :key="index">
+      <div :class="item.key === currentItemKey ? 'selectedModelItem' : 'model-item'"
+           v-for="(item, index) in modelItems" :key="index">
         <q-icon class="q-mx-sm grab" name="drag_handle" size="2rem"/>
         <span>{{item.key}}</span>
-        <q-btn class="float-right q-ma-sm" color="grey" size="large" icon="settings" flat @click.native="edit(index)"></q-btn>
+        <q-btn class="float-right q-ma-sm" color="grey" size="large" icon="settings" flat
+               @click.native="edit(index)"></q-btn>
       </div>
     </draggable>
   </q-page>
@@ -89,7 +91,8 @@
     margin-bottom: 2px;
     margin-top: 2px;
     cursor: default;
-    user-select: none;}
+    user-select: none;
+  }
 
 
   .ghost {
@@ -141,8 +144,16 @@
       paletteDrawerOpen: function () {
         return this.$store.state.paletteDrawerOpen
       },
-      currentItem: function () {
-        return this.$store.state.currentItem
+      editableProperty: {
+        get: function () {
+          return this.$store.state.editableProperty
+        },
+        set: function () {
+          this.$store.commit('editableProperty', v)
+        }
+      },
+      currentItemKey: function () {
+        return this.$store.state.currentItemKey
       },
       modelItems: {
         get: function () {
@@ -169,8 +180,33 @@
       )
     },
     methods: {
+
+      cancelEdit: function () {
+        this.propertyModalShowing = false
+      },
+      saveEdit: function () {
+        // Find item we're targeting
+        const currentItemKey = this.$store.state.currentItemKey
+        const valuesToApply = this.$store.state.editableProperty
+        let idx = 0
+        this.$store.state.currentItems.forEach(
+          (item) => {
+            if (item.key === currentItemKey) {
+              item.example = valuesToApply.example
+              item.key = valuesToApply.key
+              item.multiple = valuesToApply.multiple
+              item.required = valuesToApply.required
+              item.title = valuesToApply.title
+              this.$store.commit('setCurrentItem', idx)
+            }
+            idx++
+          }
+        )
+        this.propertyModalShowing = false
+      },
       edit: function (idx) {
         this.$store.commit('setCurrentItem', idx)
+        this.$store.commit('editableProperty', JSON.parse(JSON.stringify(this.$store.state.currentItem)))
         this.$store.commit('propertyModalShowing', true)
       },
       choose (event) {

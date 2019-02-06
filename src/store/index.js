@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 const dottie = require('dottie')
 
 Vue.use(Vuex)
@@ -14,6 +15,7 @@ export default function (/* { ssrContext } */) {
     paletteDrawerOpen: true,
     propertyModalShowing: false,
     currentModelPath: '$ROOT',
+    editableProperty: {},
     models: {
       '$ROOT': {
         title: '',
@@ -24,12 +26,15 @@ export default function (/* { ssrContext } */) {
   }
   state.currentModel = dottie.get(state.models, state.currentModelPath)
   state.currentItems = state.currentModel.items
-  state.currentItemIdx = null
+  state.currentItemKey = null
   state.currentItem = {}
   return new Vuex.Store(
     {
       state: state,
       getters: {
+        editableProperty: state => {
+          return state.editableProperty
+        },
         paletteDrawerOpen: state => {
           return state.paletteDrawerOpen
         },
@@ -41,6 +46,9 @@ export default function (/* { ssrContext } */) {
         }
       },
       mutations: {
+        editableProperty (state, value) {
+          state.editableProperty = value
+        },
         propertyModalShowing (state, value) {
           state.propertyModalShowing = value
         },
@@ -52,8 +60,8 @@ export default function (/* { ssrContext } */) {
           state.currentItems = dottie.get(state.models, state.currentModelPath + '.items')
         },
         setCurrentItem (state, idx) {
-          state.currentItemIdx = idx
           state.currentItem = state.currentItems[idx]
+          state.currentItemKey = state.currentItem.key
         }
       }
     })
