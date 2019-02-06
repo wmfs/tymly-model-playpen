@@ -88,7 +88,8 @@
           multiple: false,
           example: '',
           image: original.image,
-          key: key
+          key: key,
+          firstEdit: true
         }
       }
     },

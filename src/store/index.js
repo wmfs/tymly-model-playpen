@@ -59,9 +59,17 @@ export default function (/* { ssrContext } */) {
           dottie.set(state.models, state.currentModelPath + '.items', value)
           state.currentItems = dottie.get(state.models, state.currentModelPath + '.items')
         },
+        removeItem (state, idx) {
+          state.currentItems.splice(idx, 1)
+        },
         setCurrentItem (state, idx) {
-          state.currentItem = state.currentItems[idx]
-          state.currentItemKey = state.currentItem.key
+          if (idx === null) {
+            state.currentItem = {}
+            state.currentItemKey = ''
+          } else {
+            state.currentItem = state.currentItems[idx]
+            state.currentItemKey = state.currentItem.key
+          }
         }
       }
     })

@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md">
 
-    <q-modal v-model="propertyModalShowing">
+    <q-modal v-model="propertyModalShowing" no-backdrop-dismiss @escape-key="cancelEdit">
       <div class="q-ma-md">
         <div>
           <img class="headerIcon" :src="'statics/'+editableProperty.image">
@@ -26,17 +26,16 @@
         <div>
 
           <q-btn class="q-ma-sm" icon="delete" color="red"
-                 @click="propertyModalShowing = false"/>
+                 @click="deleteEdit"/>
 
           <q-btn class="q-ma-sm float-right" color="primary"
                  @click="saveEdit"
                  label="OK"/>
 
-          <q-btn class="q-ma-sm float-right" color="primary"
+          <q-btn v-if="!editableProperty.firstEdit" class="q-ma-sm float-right" color="primary"
                  outline
                  @click="cancelEdit"
                  label="Cancel"/>
-
 
         </div>
 
@@ -184,6 +183,22 @@
       cancelEdit: function () {
         this.propertyModalShowing = false
       },
+      deleteEdit: function () {
+        const currentItemKey = this.$store.state.currentItemKey
+        let idx = 0
+        let idxToRemove = null
+        this.$store.state.currentItems.forEach(
+          (item) => {
+            if (item.key === currentItemKey) {
+              idxToRemove = idx
+            }
+            idx++
+          }
+        )
+        this.$store.commit('removeItem', idxToRemove)
+        this.propertyModalShowing = false
+        this.$store.commit('setCurrentItem', null)
+      },
       saveEdit: function () {
         // Find item we're targeting
         const currentItemKey = this.$store.state.currentItemKey
@@ -197,6 +212,7 @@
               item.multiple = valuesToApply.multiple
               item.required = valuesToApply.required
               item.title = valuesToApply.title
+              item.firstEdit = false
               this.$store.commit('setCurrentItem', idx)
             }
             idx++
