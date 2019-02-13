@@ -7,12 +7,23 @@
           <img class="headerIcon" :src="'statics/'+editableProperty.image">
         </div>
 
+        <q-select
+          stack-label="Data Type"
+          separator
+          v-model="editableProperty.typeHint"
+          :options="dataItemOptions(editableProperty.category)"
+        />
+
         <q-field>
           <q-input v-model="editableProperty.key" stack-label="Key"/>
         </q-field>
 
         <q-field>
           <q-input v-model="editableProperty.title" stack-label="Title"/>
+        </q-field>
+
+        <q-field>
+          <q-checkbox v-model="editableProperty.primary" label="Primary?"/>
         </q-field>
 
         <q-field>
@@ -47,8 +58,16 @@
            v-for="(item, index) in modelItems" :key="index">
         <q-icon class="q-mx-sm grab" name="drag_handle" size="2rem"/>
         <span>{{item.key}}</span>
-        <q-btn class="float-right q-ma-sm" color="grey" size="large" icon="settings" flat
-               @click.native="edit(index)"></q-btn>
+        <div class="float-right q-py-sm">
+          <q-btn v-if="item.category==='object'" color="grey" size="medium" icon="list_alt" flat
+                 @click.native="focusObject(index)"></q-btn>
+
+          <q-btn color="grey" size="medium" icon="settings" flat
+                 @click.native="edit(index)"></q-btn>
+
+        </div>
+
+
       </div>
     </draggable>
   </q-page>
@@ -134,6 +153,9 @@
 <script>
   import draggable from 'vuedraggable'
 
+  const builder = require('@wmfs/json-schema-builder')
+  const dataTypesByCategory = builder.TYPES.getDataItemsByCategory()
+
   export default {
     name: 'DragAndDropPage',
     components: {
@@ -179,7 +201,29 @@
       )
     },
     methods: {
-
+      dataItemOptions: function (category) {
+        if (category) {
+          if (category === 'object') {
+            return [
+              {
+                value: 'object',
+                label: 'Object'
+              }
+            ]
+          } else {
+            return dataTypesByCategory[category].map(
+              dt => {
+                return {
+                  value: dt.name,
+                  label: dt.title
+                }
+              }
+            )
+          }
+        } else {
+          return []
+        }
+      },
       cancelEdit: function () {
         this.propertyModalShowing = false
       },
@@ -211,6 +255,7 @@
               item.key = valuesToApply.key
               item.multiple = valuesToApply.multiple
               item.required = valuesToApply.required
+              item.primary = valuesToApply.primary
               item.title = valuesToApply.title
               item.firstEdit = false
               this.$store.commit('setCurrentItem', idx)
@@ -219,6 +264,9 @@
           }
         )
         this.propertyModalShowing = false
+      },
+      focusObject (idx) {
+        console.log(idx)
       },
       edit: function (idx) {
         this.$store.commit('setCurrentItem', idx)

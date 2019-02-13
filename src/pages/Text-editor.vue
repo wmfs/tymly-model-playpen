@@ -37,7 +37,7 @@
     mounted () {
       this.editor = brace.edit('vue-bulma-editor')
       this.editor.session.setValue(
-        JSON.stringify(jsonSchemaBuilder(
+        JSON.stringify(jsonSchemaBuilder.dslToJsonSchema(
           {
             propertyHints: this.$store.state.currentItems
           }

@@ -45,6 +45,8 @@
 
 <script>
   import draggable from 'vuedraggable'
+  const builder = require('@wmfs/json-schema-builder')
+  const tymlyDataTypes = builder.TYPES
 
   export default {
     name: 'Layout',
@@ -79,11 +81,13 @@
         }
       },
       clone: function (original) {
-        this.counts[original.typeHint]++
-        const key = `${original.typeHint}${this.counts[original.typeHint]}`
+        this.counts[original.category]++
+        const key = `${original.category}${this.counts[original.category]}`
         return {
-          typeHint: original.typeHint,
+          category: original.category,
+          typeHint: original.defaultDataItemName,
           title: '',
+          primary: false,
           required: false,
           multiple: false,
           example: '',
@@ -94,6 +98,7 @@
       }
     },
     data () {
+      const categoryDefaultDataItemNames = tymlyDataTypes.getCategoryDefaultDataTypeNames()
       const d = {
         navDrawerOpen: this.$q.platform.is.desktop,
         paletteOptions: {
@@ -107,31 +112,28 @@
         },
         paletteItems: [
           {
-            typeHint: 'string',
+            category: 'text',
+            defaultDataItemName: categoryDefaultDataItemNames.text,
             image: 'icons8-typography-filled-50.png'
           },
           {
-            typeHint: 'integer',
+            category: 'number',
+            defaultDataItemName: categoryDefaultDataItemNames.number,
             image: 'icons8-number-1-filled-50.png'
           },
           {
-            typeHint: 'boolean',
-            image: 'icons8-toggle-on-filled-50.png'
+            category: 'choice',
+            defaultDataItemName: categoryDefaultDataItemNames.choice,
+            image: 'icons8-todo-list-50.png'
           },
           {
-            typeHint: 'date',
-            image: 'icons8-event-50.png'
-          },
-          {
-            typeHint: 'dateTime',
+            category: 'dateTime',
+            defaultDataItemName: categoryDefaultDataItemNames.dateTime,
             image: 'icons8-watch-50.png'
           },
           {
-            typeHint: 'email',
-            image: 'icons8-email-filled-50.png'
-          },
-          {
-            typeHint: 'object',
+            category: 'object',
+            defaultDataItemName: 'object',
             image: 'icons8-registry-editor-50.png'
           }
         ],
@@ -140,7 +142,7 @@
 
       d.paletteItems.forEach(
         paletteItem => {
-          d.counts[paletteItem.typeHint] = 0
+          d.counts[paletteItem.category] = 0
         }
       )
 
