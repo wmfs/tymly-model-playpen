@@ -46,6 +46,40 @@ export default function (/* { ssrContext } */) {
         }
       },
       mutations: {
+        ensureChildModelExists (state, options) {
+          console.log('ensureChildModelExists', options)
+          if (!state.currentModel.models.hasOwnProperty(options.new)) {
+            state.currentModel.models[options.new] = {
+              title: '',
+              items: [],
+              models: {}
+            }
+          }
+        },
+
+        removeModel (state, key) {
+          console.log('removeModel')
+        },
+
+        focusModel (state, key) {
+          console.log('focusModel', key)
+
+          if (key === '$ROOT') {
+            state.currentModelPath = '$ROOT'
+          } else {
+            const idx = state.currentModelPath.indexOf(`.models.${key}`)
+            if (idx === -1) {
+              state.currentModelPath = state.currentModelPath + `.models.${key}`
+            } else {
+              state.currentModelPath = state.currentModelPath.slice(0, idx) + `.models.${key}`
+            }
+          }
+          state.currentModel = dottie.get(state.models, state.currentModelPath)
+          state.currentItems = state.currentModel.items
+          state.currentItemKey = null
+          state.currentItem = {}
+        },
+
         editableProperty (state, value) {
           state.editableProperty = value
         },
@@ -73,5 +107,4 @@ export default function (/* { ssrContext } */) {
         }
       }
     })
-
 }

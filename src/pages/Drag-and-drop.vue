@@ -53,6 +53,10 @@
       </div>
     </q-modal>
 
+    <q-breadcrumbs class="q-mb-lg">
+      <q-breadcrumbs-el class="cursor-pointer" v-for="(modelKey) in modelBreadcrumbs" q-breadcrumbs-el :label="modelKey" key="modelKey" @click.native="focusModel(modelKey)"/>
+    </q-breadcrumbs>
+
     <draggable v-model="modelItems" class="dragArea" :options="modelOptions" @choose="choose">
       <div :class="item.key === currentItemKey ? 'selectedModelItem' : 'model-item'"
            v-for="(item, index) in modelItems" :key="index">
@@ -60,7 +64,7 @@
         <span>{{item.key}}</span>
         <div class="float-right q-py-sm">
           <q-btn v-if="item.category==='object'" color="grey" size="medium" icon="list_alt" flat
-                 @click.native="focusObject(index)"></q-btn>
+                 @click.native="focusModel(item.key)"></q-btn>
 
           <q-btn color="grey" size="medium" icon="settings" flat
                  @click.native="edit(index)"></q-btn>
@@ -176,6 +180,12 @@
       currentItemKey: function () {
         return this.$store.state.currentItemKey
       },
+      currentModelPath: function () {
+        return this.$store.state.currentModelPath
+      },
+      modelBreadcrumbs: function () {
+        return this.$store.state.currentModelPath.split('.models.')
+      },
       modelItems: {
         get: function () {
           return this.$store.state.currentItems
@@ -242,6 +252,7 @@
         this.$store.commit('removeItem', idxToRemove)
         this.propertyModalShowing = false
         this.$store.commit('setCurrentItem', null)
+        this.$store.commit('removeModel', currentItemKey)
       },
       saveEdit: function () {
         // Find item we're targeting
@@ -259,14 +270,22 @@
               item.title = valuesToApply.title
               item.firstEdit = false
               this.$store.commit('setCurrentItem', idx)
+              if (item.category === 'object') {
+                this.$store.commit('ensureChildModelExists',
+                  {
+                    old: currentItemKey,
+                    new: item.key
+                  }
+                )
+              }
             }
             idx++
           }
         )
         this.propertyModalShowing = false
       },
-      focusObject (idx) {
-        console.log(idx)
+      focusModel (key) {
+        this.$store.commit('focusModel', key)
       },
       edit: function (idx) {
         this.$store.commit('setCurrentItem', idx)
