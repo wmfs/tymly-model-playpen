@@ -52,6 +52,7 @@
       this.editor = brace.edit('vue-bulma-editor')
       const output = {}
       collateModels(this.$store.state.models.$ROOT, output)
+      console.log(JSON.stringify(output, null, 2))
       this.editor.session.setValue(
         JSON.stringify(jsonSchemaBuilder.dslToJsonSchema(output), null, 2)
       )

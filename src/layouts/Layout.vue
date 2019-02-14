@@ -46,7 +46,7 @@
 <script>
   import draggable from 'vuedraggable'
   const builder = require('@wmfs/json-schema-builder')
-  const tymlyDataTypes = builder.TYPES
+  const tymlyDataTypes = builder.dataTypes
 
   export default {
     name: 'Layout',

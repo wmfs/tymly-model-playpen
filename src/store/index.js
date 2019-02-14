@@ -48,17 +48,25 @@ export default function (/* { ssrContext } */) {
       mutations: {
         ensureChildModelExists (state, options) {
           console.log('ensureChildModelExists', options)
-          if (!state.currentModel.models.hasOwnProperty(options.new)) {
-            state.currentModel.models[options.new] = {
-              title: '',
-              items: [],
-              models: {}
+          if (state.currentModel.models.hasOwnProperty(options.old) && options.new !== options.old) {
+            // Rename occurred, so copy old to new, and delete the old one.
+            state.currentModel.models[options.new] = state.currentModel.models[options.old]
+            delete state.currentModel.models[options.old]
+          } else {
+            if (!state.currentModel.models.hasOwnProperty(options.new)) {
+              state.currentModel.models[options.new] = {
+                title: '',
+                items: [],
+                models: {}
+              }
             }
           }
         },
-
         removeModel (state, key) {
-          console.log('removeModel')
+          console.log('removeModel', key)
+          if (state.currentModel.models.hasOwnProperty(key)) {
+            delete state.currentModel.models[key]
+          }
         },
 
         focusModel (state, key) {

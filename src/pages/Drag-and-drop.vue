@@ -156,9 +156,8 @@
 
 <script>
   import draggable from 'vuedraggable'
-
   const builder = require('@wmfs/json-schema-builder')
-  const dataTypesByCategory = builder.TYPES.getDataItemsByCategory()
+  const dataTypesByCategory = builder.dataTypes.getDataItemsByCategory()
 
   export default {
     name: 'DragAndDropPage',
