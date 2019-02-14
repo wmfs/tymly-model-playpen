@@ -35,13 +35,25 @@
     computed: {
     },
     mounted () {
-      this.editor = brace.edit('vue-bulma-editor')
-      this.editor.session.setValue(
-        JSON.stringify(jsonSchemaBuilder.dslToJsonSchema(
-          {
-            propertyHints: this.$store.state.currentItems
+
+      function collateModels(root, target) {
+
+        target.propertyHints = []
+        root.items.forEach(
+          item => {
+            const targetItem = JSON.parse(JSON.stringify(item))
+            target.propertyHints.push(targetItem)
+            if (item.typeHint === 'object') {
+              collateModels(root.models[item.key], targetItem)
+            }
           }
-        ), null, 2)
+        )
+      }
+      this.editor = brace.edit('vue-bulma-editor')
+      const output = {}
+      collateModels(this.$store.state.models.$ROOT, output)
+      this.editor.session.setValue(
+        JSON.stringify(jsonSchemaBuilder.dslToJsonSchema(output), null, 2)
       )
       this.$nextTick(
         function () {
